@@ -1,0 +1,78 @@
+name: Hybrid Search CI/CD
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    env:
+      ELASTICSEARCH_HOST: elasticsearch
+      ELASTICSEARCH_PORT: 9200
+      FASTAPI_APP_URL: http://localhost:8000
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Install Docker using Docker's official script
+      run: |
+          curl -fsSL https://get.docker.com -o get-docker.sh
+          sudo sh get-docker.sh
+      continue-on-error: false
+
+    - name: Build and bring up services with Docker Compose
+      run: |
+        docker compose up --build -d
+
+    - name: Wait for Elasticsearch to be healthy
+      run: |
+        echo "Waiting for Elasticsearch to start..."
+        for i in $(seq 1 30); do
+          if docker compose exec elasticsearch curl -s http://${ELASTICSEARCH_HOST}:${ELASTICSEARCH_PORT}/_cluster/health?wait_for_status=yellow > /dev/null; then
+            echo "Elasticsearch is up and healthy!"
+            exit 0
+          fi
+          echo "Elasticsearch not ready yet, retrying in 5 seconds..."
+          sleep 5
+        done
+        echo "Elasticsearch did not start in time."
+        exit 1
+
+    - name: Index sample data into Elasticsearch
+      run: |
+        echo "Indexing sample data..."
+        docker compose exec app pdm run create_es_index
+
+    - name: Run FastAPI health check
+      run: |
+        echo "Checking FastAPI service health..."
+        for i in $(seq 1 20); do
+          if curl -s ${FASTAPI_APP_URL}/health > /dev/null; then
+            echo "FastAPI service is healthy!"
+            exit 0
+          fi
+          echo "FastAPI not ready yet, retrying in 5 seconds..."
+          sleep 5
+        done
+        echo "FastAPI service did not start in time."
+        exit 1
+
+    - name: Run tests
+      run: |
+        docker compose exec app pdm test
+
+    - name: Run Search Metrics Evaluation
+      run: |
+        echo "Metrics evaluation..."
+        docker compose exec app pdm run measure_metrics
+
+    - name: Tear down services
+      if: always()
+      run: |
+        docker compose down
