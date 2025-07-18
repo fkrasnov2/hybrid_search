@@ -1,0 +1,39 @@
+[
+    {
+        "query": "artificial intelligence and machine learning concepts",
+        "relevant_documents": {
+            "doc1": 2,
+            "doc2": 2
+        },
+        "all_relevant_ids": ["doc1", "doc2"]
+    },
+    {
+        "query": "Elasticsearch usage and search engine features",
+        "relevant_documents": {
+            "doc4": 2,
+            "doc8": 1
+        },
+        "all_relevant_ids": ["doc4", "doc8"]
+    },
+    {
+        "query": "Python web framework for APIs",
+        "relevant_documents": {
+            "doc7": 2
+        },
+        "all_relevant_ids": ["doc7"]
+    },
+    {
+        "query": "data analysis and insights",
+        "relevant_documents": {
+            "doc9": 2
+        },
+        "all_relevant_ids": ["doc9"]
+    },
+    {
+        "query": "document processing and natural language",
+        "relevant_documents": {
+            "doc3": 2
+        },
+        "all_relevant_ids": ["doc3"]
+    }
+]

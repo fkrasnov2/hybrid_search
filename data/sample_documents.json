@@ -1,0 +1,12 @@
+[
+    {"id": "doc1", "text": "Artificial intelligence is a rapidly evolving field.", "metadata": {"author": "AI Institute"}},
+    {"id": "doc2", "text": "Machine learning is a subset of AI that focuses on algorithms.", "metadata": {"date": "2023-01-15"}},
+    {"id": "doc3", "text": "Natural Language Processing (NLP) deals with language understanding.", "metadata": {"category": "NLP"}},
+    {"id": "doc4", "text": "Elasticsearch is a powerful open-source search and analytics engine.", "metadata": {"source": "Elastic"}},
+    {"id": "doc5", "text": "Sentence Transformers generate embeddings for textual data.", "metadata": {"tool": "Hugging Face"}},
+    {"id": "doc6", "text": "LightGBM is a gradient boosting framework that uses tree-based learning algorithms.", "metadata": {"type": "ML Algorithm"}},
+    {"id": "doc7", "text": "FastAPI is a modern, fast (high-performance) web framework for building APIs with Python 3.7+.", "metadata": {"framework": "Python"}},
+    {"id": "doc8", "text": "Hybrid search combines multiple search techniques for better relevance.", "metadata": {"concept": "Search"}},
+    {"id": "doc9", "text": "Big data analytics helps uncover hidden patterns and insights.", "metadata": {"topic": "Data Science"}},
+    {"id": "doc10", "text": "Deep learning models are often used in computer vision tasks.", "metadata": {"field": "Computer Vision"}}
+]

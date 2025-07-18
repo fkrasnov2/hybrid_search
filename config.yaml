@@ -1,0 +1,17 @@
+ELASTICSEARCH:
+  HOST: elasticsearch 
+  PORT: 9200
+  INDEX: documents
+
+MODELS:
+  VECTOR_MODEL_NAME: deepvk/USER2-small
+  RERANKER_MODEL_PATH: models/lightgbm_reranker.pkl
+
+APP:
+  FASTAPI_APP_URL: http://localhost:8000
+  DATA_FILE: data/sample_documents.json
+  GROUND_TRUTH_FILE: data/ground_truth.json
+
+METRICS:
+  K_VALUES: [1, 3, 5, 10]
+

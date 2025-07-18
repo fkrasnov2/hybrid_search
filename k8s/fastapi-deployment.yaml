@@ -1,0 +1,56 @@
+# k8s/fastapi-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hybrid-search-fastapi-deployment
+  labels:
+    app: hybrid-search-fastapi
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: hybrid-search-fastapi
+  template:
+    metadata:
+      labels:
+        app: hybrid-search-fastapi
+    spec:
+      containers:
+      - name: fastapi-app
+        image: docker.io/fkrasnov/hybrid_search-app:latest
+        ports:
+        - containerPort: 8000
+        env:
+        - name: ELASTICSEARCH_HOST
+          valueFrom:
+            secretKeyRef:
+              name: elasticsearch-secrets # Name of the Kubernetes Secret
+              key: ELASTICSEARCH_HOST    # Key within the Secret
+        - name: ELASTICSEARCH_PORT
+          valueFrom:
+            secretKeyRef:
+              name: elasticsearch-secrets # Name of the Kubernetes Secret
+              key: ELASTICSEARCH_PORT    # Key within the Secret
+        resources:
+          requests: # Minimum resources required by the container
+            memory: "256Mi"
+            cpu: "250m" # 250 milli-cores = 0.25 of a CPU core
+          limits: # Maximum resources the container can consume
+            memory: "512Mi"
+            cpu: "500m" # 500 milli-cores = 0.5 of a CPU core
+        livenessProbe: # Checks if the container is still running and healthy (e.g., preventing deadlocks)
+          httpGet:
+            path: /health # Your FastAPI health check endpoint
+            port: 8000
+          initialDelaySeconds: 10 # Wait 10 seconds before first probe
+          periodSeconds: 5      # Check every 5 seconds
+          timeoutSeconds: 3     # Timeout after 3 seconds
+          failureThreshold: 3   # Mark as unhealthy after 3 consecutive failures
+        readinessProbe: # Checks if the container is ready to serve traffic
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 15 # Wait 15 seconds before first probe
+          periodSeconds: 10     # Check every 10 seconds
+          timeoutSeconds: 3     # Timeout after 3 seconds
+          failureThreshold: 3   # Mark as unready after 3 consecutive failures
